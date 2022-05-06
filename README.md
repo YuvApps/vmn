@@ -3,9 +3,41 @@
   <br>
 <h1 align="center">Version managment package</h1>
 </p>
+
+<p align="center">
+  <br>
+  <img width="800" src="https://i.imgur.com/dwmhs3v.png">
+  <br>
+</p>
+
+**Contents**
+
+- [General Information](#general-information)
+  - [What it does?](#what-it-does)
+  - [Key features](#key-features)
+- [Installation Guide](#installation-guide)
+- [Usage](#usage)
+  - [Prerequisitions](#prerequisitions)
+  - [Start Stamping](#start-stamping)
+  - [Release Candidates](#release-candidates)
+  - [Show](#show)
+  - [Goto](#goto)
+- [Advanced Features](#advanced-features)
+  - [Root Apps](#root-apps)
+  - [Configuration](#configuration)
+
+
+## General Information
 A simple package for auto increasing version numbers of any application agnostic to language or architecture.
 
 `vmn` is compliant with `Semver` (https://semver.org) semantics
+
+### What it does?
+`vmn` is a CLI tool for handling project versioning needs.
+
+`vmn` can also be used like a Python library.
+
+Go ahead and read `vmn`'s docs :)
 
 ### Key features
 
@@ -20,42 +52,80 @@ A simple package for auto increasing version numbers of any application agnostic
 - [ ] `WIP` Addition of `releasenotes` for an existing version [`Semver` extension]
 - [ ] `WIP` Support "root apps" that are located in different repositories
 
-## Installation
+## Installation Guide
 ```sh
 pip3 install vmn
 ```
 
 ## Usage
-### cd into your git repository
-```sh
-cd to/your/repository
-```
+### Help support
+`vmn` and all its subactions suppurts `--help` so use it when needed for forther explations
 
-### Init phase
+### Prerequisitions
 ```sh
-## Needed only once per repository.
+# Change Directory Into Your Git Repository
+cd to/your/repository
+
+# Needed Only Once Per Repository.
 vmn init
 ```
+### Init App
+Needed Only Once Per App-Name (Multiple App-Name can be exist under one Repository)
+```
+vmn init-app [-h] [-v VERSION] [--dry-run] <App-Name>                        
+```
+|     Argument Name                    | Mendatory / Optional  | Description                                                  |
+| :----------------------------------: | --------------------- | ------------------------------------------------------------ |
+|     `<App-Name>`                     | Mendatory | The application's name to initialize version tracking for |
+|     `-h, --help`                     | Optional  | show this help message and exit                            |
+|     `-v VERSION, --version VERSION`  | Optional  | The version to init from. Must be specified in the raw version format: {major}.{minor}.{patch}   |
 
-### Start stamping
+
+#### exmple for usages
+```
+vmn init-app test-vmn
+# The starting version is 0.0.0
+
+## Example for starting other app in the same repository from version 1.6.8
+vmn init-app -v 1.6.8 other-test
+```
+
+### Stamp
+```
+vmn stamp [-h] [-r] [--pr PR] [--pull] [--dont-check-vmn-version] [--orv ORV] [--ov OV] [--dry-run] [-e EXTRA_COMMIT_MESSAGE] name
+
+positional arguments:
+  name                  The application's name
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r , --release-mode   major / minor / patch / hotfix
+  --pr PR, --prerelease PR
+                        Prerelease version. Can be anything really until you decide to release the version
+  --pull
+  --dont-check-vmn-version
+  --orv ORV, --override-root-version ORV
+                        Override current root version with any integer of your choice
+  --ov OV, --override-version OV
+                        Override current version with any version in the format: ^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:\.(?P<hotfix>0|[1-9]\d*))?$
+  --dry-run
+  -e EXTRA_COMMIT_MESSAGE, --extra-commit-message EXTRA_COMMIT_MESSAGE
+                        add more information to the commit message.example: adding --extra-commit-message '[ci-skip]' will add the string '[ci-skip]' to the commit message
+```
+
+
+#### exmple for usages
 ```sh
-## Needed only once per app-name
-# will start from 0.0.0
-vmn init-app <app-name>
-
-# will stamp 0.0.1
+# To Increace The Version To Version 0.0.1
 vmn stamp -r patch <app-name>
 
-# example for starting from version 1.6.8
-vmn init-app -v 1.6.8 <app-name2>
-
-# will stamp 1.7.0
-vmn stamp -r minor <app-name2>
+# To Increace The Version To Version 1.7.0
+vmn stamp -r minor <App-Name2>
 ```
 ##### Note:
 `init-app` and `stamp` both support `--dry-run` flag
 
-### Release candidates
+### Release Candidates
 
 `vmn` supports `Semver`'s `prerelease` notion of version stamping, enabling you to release non-mature versions and only then release the final version.
 
@@ -107,8 +177,8 @@ and be embedded via a custom script to the application's code during its build p
 | ![alt text](https://user-images.githubusercontent.com/5350434/136626161-2a7bdc4a-5d42-4012-ae42-b460ddf7ea88.png) | Will embed Semver version string to your `package.json` file during the `vmn stamp` command |
 | ![alt text](https://user-images.githubusercontent.com/5350434/136626484-0a8e4890-42f1-4437-b306-28f190d095ee.png) | Will embed Semver version string to your `Cargo.toml` file during the `vmn stamp` command |
 
-## Advanced features
-### Root apps
+## Advanced Features
+### Root Apps
 
 `vmn` supports stamping of something called a "root app" which can be useful for managing version of multiple services that are logically located under the same solution. 
 
